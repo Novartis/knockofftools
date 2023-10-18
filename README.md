@@ -17,7 +17,7 @@ In the vignette folder we provide various example use cases of the knockofftools
 ## References 
 Knockoff tools is introduced in [Zimmermann et al. 2023)](under-review).
 
-Furthremore, details of the novel implemented methods can be found in the following papers:
+Furthermore, details of the novel implemented methods can be found in the following papers:
 
 - Sparse sequential knockoffs in [Zimmermann et al. (2023)](under-review)
 - Sequential knockoffs in [Kormaksson et al. (2021)](https://onlinelibrary.wiley.com/doi/full/10.1002/sim.8955)
