@@ -1,0 +1,39 @@
+Package: knockofftools
+Title: Knockoffs Utility Tools
+Version: 1.0.0
+Authors@R: 
+    c(person(given = "Matthias",
+           family = "Kormaksson",
+           role = c("aut", "cre"),
+           email = "matthias.kormaksson@novartis.com"),
+      person(given = "Kostas",
+           family = "Sechidis",
+           role = "aut"),
+      person(given = "Manuela",
+           family = "Zimmermann",
+           role = "aut"))
+Description: A suite of knockoffs functions and methods from existing R-packages and papers. Some of the R functions are simple wrapper functions, while others are novel implementations of recent methods.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.6.0)
+Imports:
+    dplyr (>= 0.7.8),
+    glmnet (>= 3.0),
+    knockoff (>= 0.3.2),
+    clustermq (>= 0.8.8),
+    ggplot2 (>= 3.2.0),
+    survival (>= 2.44.1.1),
+    randomForestSRC (>= 2.9.1),
+    grf (>= 2.0.2),
+    glasso (>= 1.11),
+    CVglasso (>= 1.0),
+    nnet (>= 7.3-18)
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    callr,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
