@@ -252,8 +252,13 @@ causal_forest_importance_scores <- function(X, y, trt, type = "regression", shuf
     if (shuffle == TRUE) {
       y = y[sample(dim(X)[1]),]
     }
+    funArgs <-  list(...)
+    if (is.null(funArgs$horizon)){
+      c.forest = grf::causal_survival_forest(X = X_transformed, Y = y[,1], W = trt, D = y[,2], mtry = dim(X_transformed)[2], horizon = min(max(y[trt==1,1]), max(y[trt==0,1])), num.threads = 1, ...)
+    } else{
       c.forest = grf::causal_survival_forest(X = X_transformed, Y = y[,1], W = trt, D = y[,2], mtry = dim(X_transformed)[2], num.threads = 1,  ...)
 
+    }
   }
   Z = grf::variable_importance(c.forest)
 
