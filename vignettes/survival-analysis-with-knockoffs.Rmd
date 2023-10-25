@@ -107,9 +107,9 @@ for each of the $k=1,\dots,M$ knockoff copies. Then finally calculate
 (for each knockoff $k$) the corresponding knockoff (feature) statistics
 $W^{(k)}_j = |\beta_j^{(k)}|-|\tilde{\beta}_j^{(k)}|$. 
 
-```{r, message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 set.seed(123)
-W <- knockoff.statistics(y, X, type="survival", M=10)
+W <- knockoff.statistics(y, X, type="survival", M=31)
 head(W)
 ```
 
@@ -120,7 +120,7 @@ In the above we have used (as a default) parallel computing via the package
 ## Variable selection via multiple knockoffs
 
 We simulated $M = 10$ feature statistics in order to evaluate robustness of the knockoff variable selection process, each time simulating a new knockoff of `X`. To calculate which variables will be selected for each of these knockoff statistics we use the `variable.selections` function. This function takes the knockoff statistics `W` as input and additionally specifies the `error.type="fdr"` (default), `"pfer"` (per family error error), or `"kfwer"` (k-familywise error rate) and the corresponding target error level. 
-```{r}
+```{r, eval=FALSE}
 S = variable.selections(W, level = 0.2, error.type="fdr")
 head(S$selected)
 S$stable.variables
@@ -130,7 +130,7 @@ In a nutshell the function will both calculate individual variable selections (f
 ## Heatmap of multiple variable selections
 
 In order to evaluate the robustness of the knockoff selection procedure we can visualize a heatmap of the selections across the knockoff replicates. 
-```{r, fig.width=7.15, fig.height=4.5, fig.fullwidth=TRUE}
+```{r, eval=FALSE}
 plot(S)
 ```
 By default the stable variable names will be colored in red. Note the message "Co-Clustering successfully terminated!". We apply co-clustering of the rows and columns of the heatmap with the `blockcluster` package, which identifies blocks of similarities in the binary selections. We then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap. The plotting function will order the heatmap rows/columns according to importance only if the `blockcluster` and `dplyr` packages are installed.

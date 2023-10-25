@@ -20,7 +20,6 @@
 #' @param trt binary treatment (factor) variable required if statistic involves a predictive knockoff filter (i.e. if statistic="stat_predictive_glmnet" or statistic="stat_predictive_causal_forest")
 #' @param gcm logical indicator for whether a Gaussian Copula Model should be applied. Defaults to TRUE since the underlying knockoff generation mechanism for numeric variables is based on multivariate Gaussian variables.
 #' When gcm=TRUE each numeric variable is normal score transformed resulting in marginal standard normal variables. The knockoff filter then acts in this transformed variable space. User is advised not to change this parameter unless he/she understands the consequences.
-#' @param verbose internal control of how much information on job status to display
 #' @param ... additional parameters passed to the "statistic" function (note that the knockoffs parameter X_k should not be entered by user; it is already calculated inside the knockoff.statistics function).
 #'
 #' @return data.frame with knockoff statistics W as column. The number of rows matches the number of columns (variables) of the data.frame X and the variable names are recorded in rownames(W).
@@ -28,7 +27,6 @@
 #'
 #' @examples
 #' library(knockofftools)
-#' options(clustermq.scheduler="multiprocess")
 #'
 #' set.seed(1)
 #'
@@ -91,9 +89,8 @@
 #'                          trt=trt, M=31)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)}
 knockoff.statistics <- function(y, X, type="regression",
-                                M = 1, knockoff.method = "seq",
+                                M = 1, scheduler = "none", knockoff.method = "seq",
                                 statistic = "stat_glmnet", trt=NULL, gcm=TRUE,
-                                verbose=FALSE,
                                 ...) {
 
   check_design(X)
@@ -129,16 +126,12 @@ knockoff.statistics <- function(y, X, type="regression",
       W <- .knockoff.statistics.single(y, X, type=type,
                                         knockoff.method = knockoff.method,
                                         statistic = statistic, trt=trt,
-                                        verbose = verbose,
                                         ...)
   } else if (round(M)==M & M > 1) {
     W <- clustermq::Q(.knockoff.statistics.single,
                       type=rep(type, M),
-                      const = list(y=y, X=X,
-                                   knockoff.method=knockoff.method,
-                                   statistic=statistic, trt=trt, verbose=verbose, ...),
+                      const = list(y=y, X=X, knockoff.method=knockoff.method, statistic=statistic, trt=trt, ...),
                       n_jobs=M,
-                      export = list(current_lib_paths = .libPaths()),
                       log_worker = FALSE,
                       timeout = 300)
     W <- as.data.frame(W)
@@ -146,7 +139,6 @@ knockoff.statistics <- function(y, X, type="regression",
   } else {
     stop("M needs to be an integer >= 1")
   }
-
 
   return(W)
 
@@ -172,30 +164,7 @@ knockoff.statistics <- function(y, X, type="regression",
 .knockoff.statistics.single <- function(y, X, type="regression",
                                         knockoff.method = "seq",
                                         statistic = "stat_glmnet", trt=NULL,
-                                        verbose = FALSE,
                                         ...) {
-
-  if(!exists('worker_setup_complete', mode='logical')) {
-
-    if (verbose) cat("Calling setup function:\n")
-    # make sure the workers have the same libpaths as the master node
-    if (exists("current_lib_paths")) {
-      .libPaths(current_lib_paths)
-    }
-    if ((suppressWarnings(!require("knockofftools", quietly = TRUE))) &&
-        !exists("knockoff", mode="function")) {
-      # knockofftools is not installed, could be running from dev
-      devtools::load_all()
-    }
-    worker_setup_complete <<- TRUE
-  } else {
-    if (verbose) {
-      cat("Calling GC:\n")
-      print(gc())
-    } else {
-      gc()
-    }
-  }
 
   # Calculate the knockoff copy of X (defaults to sequential knockoffs):
   X_k <- knockoff(X, method=knockoff.method)
@@ -204,6 +173,7 @@ knockoff.statistics <- function(y, X, type="regression",
   W <- statistic(y=y, X=X, X_k=X_k, type=type, trt=trt, ...)
 
   return(W)
+
 }
 
 #' Knockoff (feature) statistics: Absolute elastic-net coefficient differences between original and knockoff variables

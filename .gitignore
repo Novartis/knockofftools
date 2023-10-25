@@ -1,6 +1,7 @@
 # History files
 .Rhistory
 .Rapp.history
+.Rbuildignore
 
 # Session Data files
 .RData
@@ -47,3 +48,5 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+/doc/
+/Meta/
