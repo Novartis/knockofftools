@@ -61,7 +61,7 @@ So we want our filters to return the 6th and 7th variable, since are the predict
 One direct way of deriving importance scores that capture the predictive strength of each variable is to use a LASSO linear model, modelling both main and interaction effects, and check the absolute value of the coefficient of the interaction terms. In `knockofftools` the function `stat_predictive_glmnet` implements the filter that follows this approach. 
 
 ```{r, message=TRUE}
-W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=1)
+W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=10)
 S = variable.selections(W, level = 1, error.type="pfer")
 S$stable.variables
 ```
@@ -71,7 +71,7 @@ Causal trees (CT), introduced by Athey and Imbens [@athey2016recursive],  is a r
 We have implemented a knockoff filter that uses the importance scores from the causal forest to derive predictive markers.
 
 ```{r, message=TRUE}
-W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=1)
+W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=10)
 S = variable.selections(W, level = 1, error.type="pfer")
 S$stable.variables
 ```

@@ -131,6 +131,7 @@ knockoff.statistics <- function(y, X, type="regression",
     W <- clustermq::Q(.knockoff.statistics.single,
                       type=rep(type, M),
                       const = list(y=y, X=X, knockoff.method=knockoff.method, statistic=statistic, trt=trt, ...),
+                      pkgs = "knockofftools",
                       n_jobs=M,
                       log_worker = FALSE,
                       timeout = 300)
@@ -644,6 +645,7 @@ stat_predictive_causal_forest <- function(X, X_k, y, trt, type = "regression", p
                                                      y=as.matrix(y),
                                                      trt = trt,
                                                      shuffle = TRUE, ...),
+                                        pkgs = "knockofftools",
                                         n_jobs=n_jobs,
                                         pkgs="grf")
 

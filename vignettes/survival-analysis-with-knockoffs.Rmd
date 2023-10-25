@@ -107,9 +107,9 @@ for each of the $k=1,\dots,M$ knockoff copies. Then finally calculate
 (for each knockoff $k$) the corresponding knockoff (feature) statistics
 $W^{(k)}_j = |\beta_j^{(k)}|-|\tilde{\beta}_j^{(k)}|$. 
 
-```{r, eval=FALSE}
+```{r, message=FALSE, warning=FALSE}
 set.seed(123)
-W <- knockoff.statistics(y, X, type="survival", M=31)
+W <- knockoff.statistics(y, X, type="survival", M=10)
 head(W)
 ```
 
