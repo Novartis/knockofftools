@@ -120,7 +120,7 @@ In the above we have used (as a default) parallel computing via the package
 ## Variable selection via multiple knockoffs
 
 We simulated $M = 10$ feature statistics in order to evaluate robustness of the knockoff variable selection process, each time simulating a new knockoff of `X`. To calculate which variables will be selected for each of these knockoff statistics we use the `variable.selections` function. This function takes the knockoff statistics `W` as input and additionally specifies the `error.type="fdr"` (default), `"pfer"` (per family error error), or `"kfwer"` (k-familywise error rate) and the corresponding target error level. 
-```{r, eval=FALSE}
+```{r}
 S = variable.selections(W, level = 0.2, error.type="fdr")
 head(S$selected)
 S$stable.variables
