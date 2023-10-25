@@ -121,7 +121,7 @@ In order to evaluate the robustness of the knockoff selection procedure we can v
 ```{r, warning=FALSE, fig.width=7.15, fig.height=4.5, fig.fullwidth=TRUE}
 plot(S)
 ```
-By default the stable variables will be colored in red. We apply co-clustering of the rows and columns of the heatmap and then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap.
+We apply co-clustering of the rows and columns of the heatmap and then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap.
 
 ## Appendix {#appendix}
 
