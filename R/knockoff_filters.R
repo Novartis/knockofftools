@@ -89,7 +89,7 @@
 #'                          trt=trt, M=31)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)}
 knockoff.statistics <- function(y, X, type="regression",
-                                M = 1, scheduler = "none", knockoff.method = "seq",
+                                M = 1, knockoff.method = "seq",
                                 statistic = "stat_glmnet", trt=NULL, gcm=TRUE,
                                 ...) {
 
