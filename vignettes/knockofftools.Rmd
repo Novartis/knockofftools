@@ -95,12 +95,11 @@ The function `knockoff.statistics` takes as main input `y`, `X`, and `type` (def
 Y = X \beta^{(k)} + \tilde{X}_k \tilde{\beta}^{(k)} + \varepsilon,
 \end{align}
 for each of the $k=1,\dots,M$ knockoff copies. Then finally calculate (for each knockoff $k$) the corresponding knockoff (feature) statistics $W^{(k)}_j = |\beta_j^{(k)}|-|\tilde{\beta}_j^{(k)}|$. By changing the `M` parameter of `knockoff.statistics` we can calculate multiple knockoff statistics in parallel:
-```{r, message=TRUE}
+```{r, message=FALSE}
 set.seed(123)
 X <- generate_X(n=2000, p=30, p_b=0, cov_type = "cov_ar1", rho=0.5)
 y <- generate_y(X = X, p_nn=10, 0.1)
 W <- knockoff.statistics(y, X, M=10)
-head(W)
 ```
 The output `W` is a data.frame of knockoff statistics across the `M` knockoff replicates.
 
@@ -122,7 +121,7 @@ In order to evaluate the robustness of the knockoff selection procedure we can v
 ```{r, fig.width=7.15, fig.height=4.5, fig.fullwidth=TRUE}
 plot(S)
 ```
-By default the stable variables will be colored in red. Note the message "Co-Clustering successfully terminated!". We apply co-clustering of the rows and columns of the heatmap with the `blockcluster` package, which identifies blocks of similarities in the binary selections. We then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap. The `plot_heatmap` function will order the heatmap rows/columns according to importance only if the `blockcluster` and `dplyr` packages are installed.
+By default the stable variables will be colored in red. We apply co-clustering of the rows and columns of the heatmap and then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap.
 
 ## Appendix {#appendix}
 
