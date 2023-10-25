@@ -130,7 +130,7 @@ In a nutshell the function will both calculate individual variable selections (f
 ## Heatmap of multiple variable selections
 
 In order to evaluate the robustness of the knockoff selection procedure we can visualize a heatmap of the selections across the knockoff replicates. 
-```{r, eval=FALSE}
+```{r, fig.width=7.15, fig.height=4.5, fig.fullwidth=TRUE}
 plot(S)
 ```
 By default the stable variable names will be colored in red. Note the message "Co-Clustering successfully terminated!". We apply co-clustering of the rows and columns of the heatmap with the `blockcluster` package, which identifies blocks of similarities in the binary selections. We then order the blocks according to increasing mean number of selections. This helps with aesthetics, but also helps visualize the most important variables that should tend towards the top of the heatmap. The plotting function will order the heatmap rows/columns according to importance only if the `blockcluster` and `dplyr` packages are installed.
