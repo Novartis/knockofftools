@@ -13,7 +13,6 @@ knockoff.statistics(
   statistic = "stat_glmnet",
   trt = NULL,
   gcm = TRUE,
-  verbose = FALSE,
   ...
 )
 }
@@ -36,8 +35,6 @@ The "mx" method only works if all columns of the X matrix are continuous.}
 \item{gcm}{logical indicator for whether a Gaussian Copula Model should be applied. Defaults to TRUE since the underlying knockoff generation mechanism for numeric variables is based on multivariate Gaussian variables.
 When gcm=TRUE each numeric variable is normal score transformed resulting in marginal standard normal variables. The knockoff filter then acts in this transformed variable space. User is advised not to change this parameter unless he/she understands the consequences.}
 
-\item{verbose}{internal control of how much information on job status to display}
-
 \item{...}{additional parameters passed to the "statistic" function (note that the knockoffs parameter X_k should not be entered by user; it is already calculated inside the knockoff.statistics function).}
 }
 \value{
@@ -57,7 +54,6 @@ for further details on how to configure (differently from defaults) clustermq sc
 }
 \examples{
 library(knockofftools)
-options(clustermq.scheduler="multiprocess")
 
 set.seed(1)
 

@@ -11,7 +11,6 @@
   knockoff.method = "seq",
   statistic = "stat_glmnet",
   trt = NULL,
-  verbose = FALSE,
   ...
 )
 }
