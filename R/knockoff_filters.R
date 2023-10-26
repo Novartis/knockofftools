@@ -128,9 +128,14 @@ knockoff.statistics <- function(y, X, type="regression",
                                         statistic = statistic, trt=trt,
                                         ...)
   } else if (round(M)==M & M > 1) {
+    if (knockoff.method == "sparseseq") {
+      adjacency.matrix <- glasso_adjacency_matrix(X)
+    } else {
+      adjacency.matrix <- NULL
+    }
     W <- clustermq::Q(.knockoff.statistics.single,
                       type=rep(type, M),
-                      const = list(y=y, X=X, knockoff.method=knockoff.method, statistic=statistic, trt=trt, ...),
+                      const = list(y=y, X=X, knockoff.method=knockoff.method, statistic=statistic, trt=trt, adjacency.matrix=adjacency.matrix, ...),
                       pkgs = "knockofftools",
                       n_jobs=M,
                       log_worker = FALSE,
@@ -156,6 +161,8 @@ knockoff.statistics <- function(y, X, type="regression",
 #' @param knockoff.method what type of knockoffs to calculate. Defaults to sequential knockoffs, knockoff.method="seq", but other options are "sparseseq" and "mx". The "mx" option only works if all columns of X are continuous.
 #' @param statistic knockoff feature statistic function, defaults to glmnet coefficient difference (statistic="stat_glmnet"; see ?stat_glmnet). Other options include statistic="stat_random_forest" (see ?stat_random_forest), statistic="stat_predictive_glmnet" (see ?stat_predictive_glmnet) or statistic="stat_predictive_causal_forest" (see ?stat_predictive_causal_forest).
 #' @param trt binary treatment (factor) variable required if statistic involves a predictive knockoff filter (i.e. if statistic="stat_predictive_glmnet" or statistic="stat_predictive_causal_forest")
+#' @param adjacency.matrix optional user specified adjacency matrix (i.e. binary indicator matrix corresponding to the non-zero elements of the precision matrix of X). Defaults to NULL and is then estimated within the function call.
+
 #' @param ... additional parameters passed to the "statistic" function (note that the knockoffs parameter X_k should not be entered by user; it is already calculated inside the knockoff.statistics function).
 #'
 #' @return data.frame with a single knockoff statistics W as column.
@@ -165,10 +172,15 @@ knockoff.statistics <- function(y, X, type="regression",
 .knockoff.statistics.single <- function(y, X, type="regression",
                                         knockoff.method = "seq",
                                         statistic = "stat_glmnet", trt=NULL,
+                                        adjacency.matrix = NULL,
                                         ...) {
 
-  # Calculate the knockoff copy of X (defaults to sequential knockoffs):
-  X_k <- knockoff(X, method=knockoff.method)
+  # Calculate the knockoff copy of X:
+  if (knockoff.method == "sparseseq") {
+    X_k <- knockoff(X, method=knockoff.method, adjacency.matrix = adjacency.matrix)
+  } else {
+    X_k <- knockoff(X, method=knockoff.method)
+  }
   # Calculate the knockoff statistic from a single knockoff copy:
   statistic <- get(statistic)
   W <- statistic(y=y, X=X, X_k=X_k, type=type, trt=trt, ...)
