@@ -99,7 +99,7 @@ for each of the $k=1,\dots,M$ knockoff copies. Then finally calculate (for each 
 set.seed(123)
 X <- generate_X(n=2000, p=30, p_b=0, cov_type = "cov_ar1", rho=0.5)
 y <- generate_y(X = X, p_nn=10, 0.1)
-W <- knockoff.statistics(y, X, M=10)
+W <- knockoff.statistics(y, X, M=5)
 ```
 The output `W` is a data.frame of knockoff statistics across the `M` knockoff replicates.
 

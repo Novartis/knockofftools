@@ -4,15 +4,7 @@
 \alias{stat_predictive_causal_forest}
 \title{Causal forest based knockoff (feature) statistics that captues the predictive strength: Difference from importance scores derived by causal forest}
 \usage{
-stat_predictive_causal_forest(
-  X,
-  X_k,
-  y,
-  trt,
-  type = "regression",
-  permutations = NULL,
-  ...
-)
+stat_predictive_causal_forest(X, X_k, y, trt, type = "regression", ...)
 }
 \arguments{
 \item{X}{original data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.}
@@ -26,8 +18,6 @@ as obtained from y = survival::Surv(time, status).}
 \item{trt}{a binary treatment indicator variable (should be numeric with 0/1 entries)}
 
 \item{type}{should be "regression" if y is numeric, "classification" if y is a binary factor variable or "survival" if y is a survival object.}
-
-\item{permutations}{when it is not null, an integer that defines the number of permutations for the method suggested in O'Neil and Weeks (2018).}
 
 \item{...}{additional parameters passed to grf::causal_forest (for type = "regression" and "classification) and causal_survival_forest (for type = "survival")}
 }
@@ -44,8 +34,6 @@ between the two sums derived by the variable importance (VI) scores associated w
 is factor with K levels then W_j is: sum(|VI_j,1|, ... , |VI_j,K|) - sum(|VI_j1|, ..., |VI_j,K|).
 
 Sechidis, K., Kormaksson, M., & Ohlssen, D. (2021). Using knockoffs for controlled predictive biomarker identification. Statistics in Medicine, 40(25), 5453-5473.
-
-O'Neill, E., & Weeks, M. (2018). Causal tree estimation of heterogeneous household response to time-of-use electricity pricing schemes. arXiv preprint arXiv:1810.09179.
 }
 \examples{
 library(knockofftools)
@@ -65,6 +53,7 @@ trt = sample(c(1,0), nrow(X), replace=TRUE)
 # Simulate a fixed "treatment" effect:
 X.fixed <- data.frame(SEX = factor(sample(c("male", "female"), nrow(X), replace=TRUE)), trt = trt)
 penalty.fixed = rep(0, length(X.fixed))
+
 # create linear predictor with first 3 beta-coefficients = 1 (all other zero) and a treatment effect of size 1
 lp <- X.fixed$trt+ as.numeric(X.fixed$SEX == 'male') + (X$X1 + X$X2 + X$X3) + (X$X4 + as.integer(X$X11=='A'))*trt
 
@@ -73,11 +62,7 @@ lp <- X.fixed$trt+ as.numeric(X.fixed$SEX == 'male') + (X$X1 + X$X2 + X$X3) + (X
 # Simulate response from a linear model y = lp + epsilon, where epsilon ~ N(0,1):
 y <- lp + rnorm(nrow(X))
 
-# Without permutations
 W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="regression")
-
-# With permutations
-W <- stat_predictive_causal_forest( X=X, X_k=X_k, y=y, trt=trt, type="regression", permutations = 100)
 
 # Cox
 
@@ -85,10 +70,6 @@ W <- stat_predictive_causal_forest( X=X, X_k=X_k, y=y, trt=trt, type="regression
 # and linear predictor lp:
 y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp)
 
-# Without permutations
 W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="survival")
-
-# With permutations
-W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="survival", permutations = 100)
 
 }
