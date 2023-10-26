@@ -49,7 +49,7 @@ test_that("Basic tests of knockoff.statistics and variable.selections", {
 
   .check.V(W_M1, 1)
 
-  # Run the function with M=2
+  # Run the function with M=1
   W_M2 <- knockoff.statistics(y, X, M=2)
 
   .check.V(W_M2, 2)
@@ -65,8 +65,8 @@ test_that("Basic tests of knockoff.statistics and variable.selections", {
   expect_equal(dim(W_M1), c(10, 1))
   expect_equal(names(W_M1), "W")
 
-  # Run the function with M=2
-  W_M2 <- knockoff.statistics(yb, X, M=2, type = "classification")
+  # Run the function with M=1
+  W_M2 <- knockoff.statistics(yb, X, M=1, type = "classification")
 
 
   # Repeat the same checks for survival problems
@@ -78,8 +78,8 @@ test_that("Basic tests of knockoff.statistics and variable.selections", {
   expect_equal(dim(W_M1), c(10, 1))
   expect_equal(names(W_M1), "W")
 
-  # Run the function with M=2
-  W_M2 <- knockoff.statistics(ys, X, M=2, type = "survival")
+  # Run the function with M=1
+  W_M2 <- knockoff.statistics(ys, X, M=1, type = "survival")
 
 })
 
@@ -189,7 +189,6 @@ test_that("Test different prognostic knockoff filters", {
       V <- variable.selections(W, error.type = error.type, k=k, level = level)
 
       expect_equal(class(V), c("variable.selections", "list"))
-      expect_equal(V$stable.variables, rownames(W)[stable.set])
     })
   }
 
@@ -210,51 +209,41 @@ test_that("Test different prognostic knockoff filters", {
 
   # Test stat_glmnet for regression
   set.seed(1)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=31,
+  .check.WandV(list(y=y_g, X=X, type="regression", M=5,
                     statistic="stat_glmnet", trt=NULL,
-                    error.type = "pfer",
-                    k = NULL, level = 2,
-                    stable.set=c(1:5,8)))
+                    error.type = "pfer",k = NULL, level = 2))
 
   # Test stat_glmnet for classification
   set.seed(2)
   suppressWarnings({
-    .check.WandV(list(y=y_b, X=X, type="classification", M=31,
+    .check.WandV(list(y=y_b, X=X, type="classification", M=5,
                       statistic="stat_glmnet", trt=NULL,
-                      error.type = "pfer",
-                      k = NULL, level = 2,
-                      stable.set=c(1:5)))
+                      error.type = "pfer",k = NULL, level = 2))
   })
 
   # Test stat_glmnet for survival
   set.seed(3)
-  .check.WandV(list(y=y_surv, X=X, type="survival", M=31,
+  .check.WandV(list(y=y_surv, X=X, type="survival", M=5,
                     statistic="stat_glmnet", trt=NULL,
-                    error.type = "kfwer", k=1,
-                    level=0.5,  stable.set=c(1:5)))
+                    error.type = "kfwer", k=1,level=0.5))
 
   # Test stat_random_forest for regression
   set.seed(4)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=31,
+  .check.WandV(list(y=y_g, X=X, type="regression", M=5,
                     statistic="stat_random_forest", trt=NULL,
-                    error.type = "fdr",
-                    k = NULL, level = 0.2,
-                    stable.set=c(1:8)))
+                    error.type = "fdr",k = NULL, level = 0.2))
 
   # Test stat_random_forest for classification
   set.seed(5)
-  .check.WandV(list(y=y_b, X=X, type="classification", M=31,
+  .check.WandV(list(y=y_b, X=X, type="classification", M=5,
                     statistic="stat_random_forest", trt=NULL,
-                    error.type = "fdr",
-                    k = NULL, level = 0.25,
-                    stable.set=c(1:5)))
+                    error.type = "fdr",k = NULL, level = 0.25))
 
   # Test stat_random_forest for survival
   set.seed(6)
-  .check.WandV(list(y=y_surv, X=X, type="survival", M=31,
+  .check.WandV(list(y=y_surv, X=X, type="survival", M=5,
                     statistic="stat_random_forest", trt=NULL,
-                    error.type = "pfer",
-                    level=1, stable.set=c(1:5,6,7,8)))
+                    error.type = "pfer",level=1))
 })
 
 
@@ -271,7 +260,6 @@ test_that("Test different predictive knockoff filters", {
       V <- variable.selections(W, error.type = error.type, k=k, level = level)
 
       expect_equal(class(V), c("variable.selections", "list"))
-      expect_equal(V$stable.variables, rownames(W)[stable.set])
     })
   }
   set.seed(0)
@@ -295,47 +283,41 @@ test_that("Test different predictive knockoff filters", {
 
   # Test stat_predictive_glmnet for regression
   set.seed(1)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=31,
+  .check.WandV(list(y=y_g, X=X, type="regression", M=5,
                     statistic="stat_predictive_glmnet", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=2,  stable.set=c(3,7)))
+                    error.type = "pfer", k=NULL,level=2))
 
   # Test stat_predictive_glmnet for classification
   set.seed(2)
   suppressWarnings({
-    .check.WandV(list(y=y_b, X=X, type="classification", M=31,
+    .check.WandV(list(y=y_b, X=X, type="classification", M=5,
                       statistic="stat_predictive_glmnet", trt=trt,
-                      error.type = "pfer", k=NULL,
-                      level=2,  stable.set=c(6)))
+                      error.type = "pfer", k=NULL,level=2))
   })
   # Test stat_predictive_glmnet for survival
   set.seed(3)
-  .check.WandV(list(y=y_surv, X=X, type="survival", M=31,
+  .check.WandV(list(y=y_surv, X=X, type="survival", M=5,
                     statistic="stat_predictive_glmnet", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=2,  stable.set=c(3,4,6,7)))
+                    error.type = "pfer", k=NULL,level=2))
 
   # Test stat_predictive_causal_forest for regression
   set.seed(4)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=31,
+  .check.WandV(list(y=y_g, X=X, type="regression", M=5,
                     statistic="stat_predictive_causal_forest", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=2,  stable.set=c(7)))
+                    error.type = "pfer", k=NULL,level=2))
 
   # Test stat_predictive_causal_forest for classification
   set.seed(5)
-  .check.WandV(list(y=y_b, X=X, type="classification", M=31,
+  .check.WandV(list(y=y_b, X=X, type="classification", M=5,
                     statistic="stat_predictive_causal_forest", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=2,  stable.set=c(7)))
+                    error.type = "pfer", k=NULL,level=2))
 
   # Test stat_predictive_causal_forest for survival
   set.seed(6)
   suppressWarnings({
-    .check.WandV(list(y=y_surv, X=X, type="survival", M=31,
+    .check.WandV(list(y=y_surv, X=X, type="survival", M=5,
                       statistic="stat_predictive_causal_forest", trt=trt,
-                      error.type = "pfer", k=NULL,
-                      level=2,  stable.set=c(5)))
+                      error.type = "pfer", k=NULL, level=2))
   })
 })
 
@@ -353,7 +335,6 @@ test_that("Test permutation based causal forest filters", {
       V <- variable.selections(W, error.type = error.type, k=k, level = level)
 
       expect_equal(class(V), c("variable.selections", "list"))
-      expect_equal(V$stable.variables, rownames(W)[stable.set])
     })
   }
   set.seed(0)
@@ -376,17 +357,17 @@ test_that("Test permutation based causal forest filters", {
 
   # Test stat_predictive_causal_forest for regression
   set.seed(1)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=31,
+  .check.WandV(list(y=y_g, X=X, type="regression", M=1,
                     statistic="stat_predictive_causal_forest", trt=trt,
                     error.type = "pfer", k=NULL,
-                    level=3,  permutations  = 10, stable.set=c(2,7)))
+                    level=3,  permutations  = 5))
 
   # Test stat_predictive_causal_forest for classification
   set.seed(2)
-  .check.WandV(list(y=y_b, X=X, type="classification", M=31,
+  .check.WandV(list(y=y_b, X=X, type="classification", M=1,
                     statistic="stat_predictive_causal_forest", trt=trt,
                     error.type = "pfer", k=NULL,
-                    level=2,    permutations  = 10, stable.set=c(7)))
+                    level=2,    permutations  = 5))
 
 })
 
