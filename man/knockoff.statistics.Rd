@@ -69,10 +69,10 @@ lp <- generate_lp(X, p_nn = 5, a=1)
 y <- lp + rnorm(100)
 
 # Calculate M independent knockoff feature statistics:
-W <- knockoff.statistics(y=y, X=X, type="regression", M=31)
+W <- knockoff.statistics(y=y, X=X, type="regression", M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 \dontrun{
-W <- knockoff.statistics(y=y, X=X, type="regression", M=31, statistic = "stat_random_forest")
+W <- knockoff.statistics(y=y, X=X, type="regression", M=5, statistic = "stat_random_forest")
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
 # Cox
@@ -81,10 +81,10 @@ print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 # and linear predictor lp:
 y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp)
 
-W <- knockoff.statistics(y=y, X=X, type="survival", M=31)
+W <- knockoff.statistics(y=y, X=X, type="survival", M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
-W <- knockoff.statistics(y=y, X=X, type="survival", M=31, statistic = "stat_random_forest")
+W <- knockoff.statistics(y=y, X=X, type="survival", M=5, statistic = "stat_random_forest")
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
 # Check quickly predictive filters
@@ -96,10 +96,10 @@ lp.pred = lp + 1*trt*( as.integer(X[,6]>0) + as.integer(X[,7]>0))
 
 y <- lp.pred + rnorm(nrow(X))
 
-W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=31)
+W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
-W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=31)
+W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
 # Cox
@@ -108,11 +108,11 @@ print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 # and linear predictor lp:
 y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp.pred)
 
-W <- knockoff.statistics(y=y, X=X, type="survival", statistic = "stat_predictive_glmnet", trt=trt, M=31)
+W <- knockoff.statistics(y=y, X=X, type="survival", statistic = "stat_predictive_glmnet", trt=trt, M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 
 W <- knockoff.statistics(y=y, X=X, type="survival",
                          statistic = "stat_predictive_causal_forest",
-                         trt=trt, M=31)
+                         trt=trt, M=5)
 print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)}
 }

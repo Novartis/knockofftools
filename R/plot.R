@@ -26,13 +26,13 @@
 #' y <- lp + rnorm(100)
 #'
 #' # Calculate M independent knockoff feature statistics:
-#' W <- knockoff.statistics(y=y, X=X, type="regression", M=10)
+#' W <- knockoff.statistics(y=y, X=X, type="regression", M=5)
 #'
 #' S = variable.selections(W, error.type = "pfer", level = 1)
 #'
 #' # plot heatmap of knockoff selections:
 #' plot(S)
-plot.variable.selections <- function(S, nbcocluster=c(7,7), color.selected = FALSE) {
+plot.variable.selections <- function(S, nbcocluster=c(7,7)) {
 
   if (class(S)[1]!="variable.selections") {
     stop("Input S must be of class \'variable.selections\'. Please see ?variable.selections.")
