@@ -54,12 +54,9 @@ lp <- generate_lp(X, p_nn = 5, a=1)
 y <- lp + rnorm(100)
 
 # Calculate M independent knockoff feature statistics:
-W <- knockoff.statistics(y=y, X=X, type="regression", M=10)
+W <- knockoff.statistics(y=y, X=X, type="regression", M=5)
 
 S = variable.selections(W, error.type = "pfer", level = 1)
-
-# plot heatmap of knockoff selections:
-plot(S)
 
 # selections under alternative error control:
 S = variable.selections(W, error.type = "kfwer", k=1, level = 0.50)

@@ -42,10 +42,10 @@
 #' y <- lp + rnorm(100)
 #'
 #' # Calculate M independent knockoff feature statistics:
-#' W <- knockoff.statistics(y=y, X=X, type="regression", M=31)
+#' W <- knockoff.statistics(y=y, X=X, type="regression", M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #' \dontrun{
-#' W <- knockoff.statistics(y=y, X=X, type="regression", M=31, statistic = "stat_random_forest")
+#' W <- knockoff.statistics(y=y, X=X, type="regression", M=5, statistic = "stat_random_forest")
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
 #' # Cox
@@ -54,10 +54,10 @@
 #' # and linear predictor lp:
 #' y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp)
 #'
-#' W <- knockoff.statistics(y=y, X=X, type="survival", M=31)
+#' W <- knockoff.statistics(y=y, X=X, type="survival", M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
-#' W <- knockoff.statistics(y=y, X=X, type="survival", M=31, statistic = "stat_random_forest")
+#' W <- knockoff.statistics(y=y, X=X, type="survival", M=5, statistic = "stat_random_forest")
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
 #' # Check quickly predictive filters
@@ -69,10 +69,10 @@
 #'
 #' y <- lp.pred + rnorm(nrow(X))
 #'
-#' W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=31)
+#' W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_glmnet", trt=trt, M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
-#' W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=31)
+#' W <- knockoff.statistics(y=y, X=X, type="regression", statistic = "stat_predictive_causal_forest", trt=trt, M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
 #' # Cox
@@ -81,12 +81,12 @@
 #' # and linear predictor lp:
 #' y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp.pred)
 #'
-#' W <- knockoff.statistics(y=y, X=X, type="survival", statistic = "stat_predictive_glmnet", trt=trt, M=31)
+#' W <- knockoff.statistics(y=y, X=X, type="survival", statistic = "stat_predictive_glmnet", trt=trt, M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)
 #'
 #' W <- knockoff.statistics(y=y, X=X, type="survival",
 #'                          statistic = "stat_predictive_causal_forest",
-#'                          trt=trt, M=31)
+#'                          trt=trt, M=5)
 #' print(variable.selections(W, error.type = "pfer", level = 2)$stable.variables)}
 knockoff.statistics <- function(y, X, type="regression",
                                 M = 1, knockoff.method = "seq",
@@ -551,7 +551,7 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 
 
 
-#' Causal forest based nockoff (feature) statistics that captues the predictive strength: Difference from importance scores derived by causal forest
+#' Causal forest based knockoff (feature) statistics that captues the predictive strength: Difference from importance scores derived by causal forest
 #'
 #' This filter presented in Sechidis et al. (2021).
 #'
@@ -590,7 +590,7 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 #' # Simulate a fixed "treatment" effect:
 #' X.fixed <- data.frame(SEX = factor(sample(c("male", "female"), nrow(X), replace=TRUE)), trt = trt)
 #' penalty.fixed = rep(0, length(X.fixed))
-
+#'
 #' # create linear predictor with first 3 beta-coefficients = 1 (all other zero) and a treatment effect of size 1
 #' lp <- X.fixed$trt+ as.numeric(X.fixed$SEX == 'male') + (X$X1 + X$X2 + X$X3) + (X$X4 + as.integer(X$X11=='A'))*trt
 #'
@@ -793,12 +793,9 @@ selections_control_kFWER <- function(W, level, k) {
 #' y <- lp + rnorm(100)
 #'
 #' # Calculate M independent knockoff feature statistics:
-#' W <- knockoff.statistics(y=y, X=X, type="regression", M=10)
+#' W <- knockoff.statistics(y=y, X=X, type="regression", M=5)
 #'
 #' S = variable.selections(W, error.type = "pfer", level = 1)
-#'
-#' # plot heatmap of knockoff selections:
-#' plot(S)
 #'
 #' # selections under alternative error control:
 #' S = variable.selections(W, error.type = "kfwer", k=1, level = 0.50)

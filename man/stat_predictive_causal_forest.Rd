@@ -2,7 +2,7 @@
 % Please edit documentation in R/knockoff_filters.R
 \name{stat_predictive_causal_forest}
 \alias{stat_predictive_causal_forest}
-\title{Causal forest based nockoff (feature) statistics that captues the predictive strength: Difference from importance scores derived by causal forest}
+\title{Causal forest based knockoff (feature) statistics that captues the predictive strength: Difference from importance scores derived by causal forest}
 \usage{
 stat_predictive_causal_forest(
   X,
