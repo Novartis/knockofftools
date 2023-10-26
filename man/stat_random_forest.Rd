@@ -23,7 +23,7 @@ as obtained from y = survival::Surv(time, status).}
 data.frame with knockoff statistics W as column. The number of rows matches the number of columns (variables) of the data.frame X and the variable names are recorded in rownames(W).
 }
 \description{
-This function uses the ranger package to estimate permutation importance scores from random forest.
+This function uses the randomForestSRC package to estimate importance scores from random forest.
 }
 \details{
 If there are factor covariates with multiple levels among columns of X then there will be more columns in model.matrix
