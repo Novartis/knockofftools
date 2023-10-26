@@ -290,7 +290,7 @@ stat_glmnet <- function(y, X, X_k, type = "regression", X.fixed=NULL, penalty.fi
 
 #' Knockoff (feature) statistics: Random forest
 #'
-#' This function uses the ranger package to estimate permutation importance scores from random forest.
+#' This function uses the randomForestSRC package to estimate importance scores from random forest.
 #'
 #' If there are factor covariates with multiple levels among columns of X then there will be more columns in model.matrix
 #' than in the corresponding data.frame (both for original X and its knockoff X_k). In this case, let W_j be the difference
@@ -567,7 +567,6 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 #' as obtained from y = survival::Surv(time, status).
 #' @param trt a binary treatment indicator variable (should be numeric with 0/1 entries)
 #' @param type should be "regression" if y is numeric, "classification" if y is a binary factor variable or "survival" if y is a survival object.
-#' @param permutations when it is not null, an integer that defines the number of permutations for the method suggested in O'Neil and Weeks (2018).
 #' @param ... additional parameters passed to grf::causal_forest (for type = "regression" and "classification) and causal_survival_forest (for type = "survival")
 #'
 #' @return data.frame with knockoff statistics W as column that capture the predictive strength of the variables. The number of rows matches the number of columns (variables) of the data.frame X and the variable names are recorded in rownames(W).
@@ -600,11 +599,7 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 #' # Simulate response from a linear model y = lp + epsilon, where epsilon ~ N(0,1):
 #' y <- lp + rnorm(nrow(X))
 #'
-#' # Without permutations
 #' W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="regression")
-#'
-#' # With permutations
-#' W <- stat_predictive_causal_forest( X=X, X_k=X_k, y=y, trt=trt, type="regression", permutations = 100)
 #'
 #' # Cox
 #'
@@ -612,15 +607,10 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 #' # and linear predictor lp:
 #' y <- simulWeib(N=nrow(X), lambda0=0.01, rho=1, lp=lp)
 #'
-#' # Without permutations
 #' W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="survival")
 #'
-#' # With permutations
-#' W <- stat_predictive_causal_forest(X=X, X_k=X_k, y=y, trt=trt, type="survival", permutations = 100)
-#'
 #' @details Sechidis, K., Kormaksson, M., & Ohlssen, D. (2021). Using knockoffs for controlled predictive biomarker identification. Statistics in Medicine, 40(25), 5453-5473.
-#' @details O'Neill, E., & Weeks, M. (2018). Causal tree estimation of heterogeneous household response to time-of-use electricity pricing schemes. arXiv preprint arXiv:1810.09179.
-stat_predictive_causal_forest <- function(X, X_k, y, trt, type = "regression", permutations = NULL, ...) {
+stat_predictive_causal_forest <- function(X, X_k, y, trt, type = "regression", ...) {
   check_design(X); check_design(X_k)
 
 
@@ -634,27 +624,8 @@ stat_predictive_causal_forest <- function(X, X_k, y, trt, type = "regression", p
   # Run in the original data
   var_split_imps= causal_forest_importance_scores(cbind(X.swap,Xk.swap), y, trt, type = type,  shuffle = FALSE,  ...)
 
-  if(is.null(permutations)){
     W = var_split_imps[orig] - var_split_imps[orig+p]
-  } else{
 
-    n_jobs <- 2
-    perm_var_split_imps <- clustermq::Q(causal_forest_importance_scores,
-                                        type = rep(type,permutations),
-                                        const = list(X=cbind(X,X_k),
-                                                     y=as.matrix(y),
-                                                     trt = trt,
-                                                     shuffle = TRUE, ...),
-                                        pkgs = c("knockofftools","grf"),
-                                        n_jobs=n_jobs)
-
-    mat_perm_var_split_imps <- do.call(cbind, perm_var_split_imps)
-    test_bind <- cbind(var_split_imps,mat_perm_var_split_imps)
-    p_values <-  apply(test_bind, 1,
-                       function(x) sum(x[1] < x[2:ncol(test_bind)])/permutations)
-
-    W = -p_values[orig] + p_values[orig+p]
-  }
 
   # Correct for swapping of columns of X and Xk
   W = W * (1-2*swap)
