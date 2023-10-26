@@ -645,9 +645,8 @@ stat_predictive_causal_forest <- function(X, X_k, y, trt, type = "regression", p
                                                      y=as.matrix(y),
                                                      trt = trt,
                                                      shuffle = TRUE, ...),
-                                        pkgs = "knockofftools",
-                                        n_jobs=n_jobs,
-                                        pkgs="grf")
+                                        pkgs = c("knockofftools","grf"),
+                                        n_jobs=n_jobs)
 
     mat_perm_var_split_imps <- do.call(cbind, perm_var_split_imps)
     test_bind <- cbind(var_split_imps,mat_perm_var_split_imps)
