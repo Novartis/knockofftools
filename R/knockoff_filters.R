@@ -590,7 +590,7 @@ stat_predictive_glmnet <- function(X, X_k, y, trt, type = "regression", X.fixed=
 #' # Simulate a fixed "treatment" effect:
 #' X.fixed <- data.frame(SEX = factor(sample(c("male", "female"), nrow(X), replace=TRUE)), trt = trt)
 #' penalty.fixed = rep(0, length(X.fixed))
-
+#'
 #' # create linear predictor with first 3 beta-coefficients = 1 (all other zero) and a treatment effect of size 1
 #' lp <- X.fixed$trt+ as.numeric(X.fixed$SEX == 'male') + (X$X1 + X$X2 + X$X3) + (X$X4 + as.integer(X$X11=='A'))*trt
 #'
