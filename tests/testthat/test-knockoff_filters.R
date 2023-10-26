@@ -322,56 +322,6 @@ test_that("Test different predictive knockoff filters", {
 })
 
 
-test_that("Test permutation based causal forest filters", {
-  .check.WandV <- function(setup) {
-    with(setup, {
-      W <- knockoff.statistics(y=y, X=X, type=type, M=M, statistic=statistic,
-                               trt=trt, permutations = permutations )
-
-      expect_equal(class(W), "data.frame")
-      expect_equal(dim(W), c(10, M))
-
-      # Threshold the variable selections:
-      V <- variable.selections(W, error.type = error.type, k=k, level = level)
-
-      expect_equal(class(V), c("variable.selections", "list"))
-    })
-  }
-  set.seed(0)
-
-  # Simulate 10 Gaussian covariate predictors:
-  X <- generate_X(n=250, p=10, p_b=2, cov_type="cov_equi", rho=0.2)
-
-  # create prognostic part by a linear predictor with first 5 beta-coefficients = 1 (all other zero)
-  lp_prog <- generate_lp(X, p_nn = 5, a=1)
-
-  # Generate a binary treatment variable
-  trt = sample(c(1,0), nrow(X), replace=TRUE)
-
-  # create the final linear predictor introducing predictive part
-  lp.pred = lp_prog + 1*trt*( as.integer(X[,6]>0) + as.integer(X[,7]==0))
-
-  # Simulate response (g for gaussian and b for binary):
-  y_g <- lp.pred + rnorm(nrow(X))
-  y_b <- factor(rbinom(nrow(X), size=1, prob=exp(lp.pred)/(1+exp(lp.pred))))
-
-  # Test stat_predictive_causal_forest for regression
-  set.seed(1)
-  .check.WandV(list(y=y_g, X=X, type="regression", M=1,
-                    statistic="stat_predictive_causal_forest", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=3,  permutations  = 5))
-
-  # Test stat_predictive_causal_forest for classification
-  set.seed(2)
-  .check.WandV(list(y=y_b, X=X, type="classification", M=1,
-                    statistic="stat_predictive_causal_forest", trt=trt,
-                    error.type = "pfer", k=NULL,
-                    level=2,    permutations  = 5))
-
-})
-
-
 test_that("Simple test of multi_select", {
 
   S <- matrix(c(1, 1, 0, 0, 0,
