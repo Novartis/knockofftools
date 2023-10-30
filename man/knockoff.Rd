@@ -4,13 +4,15 @@
 \alias{knockoff}
 \title{Knockoffs for general covariate data frames}
 \usage{
-knockoff(X, method = "seq")
+knockoff(X, method = "seq", ...)
 }
 \arguments{
 \item{X}{data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.}
 
 \item{method}{what type of knockoffs to calculate. Defaults to sequential knockoffs, method="seq", which works for
 both numeric and factor variables. The other options are method="sparseseq", which is the sparse sequential knockoff generation algorithm, and method="mx", which only works if all columns of X are continuous.}
+
+\item{...}{additional parameters passed to the downstream knockoffs generating functions}
 }
 \value{
 knockoff copy of X
