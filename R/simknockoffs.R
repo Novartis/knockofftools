@@ -143,7 +143,7 @@ sim_EN <- function(y, X, ...) {
 #' we apply the elastic net regularized regression.
 #'
 #' @param X data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.
-#' @param sparsity_estimator name of function that estimates sparsity patter. Default is \code{glasso_adjacency_matrix}.
+#' @param adjacency.matrix optional user specified adjacency matrix (i.e. binary indicator matrix corresponding to the non-zero elements of the precision matrix of X). Defaults to NULL and is then estimated within the function call.
 #' @param seq_simulator name of function that used to estimate the conditional distributions in the sequential steps. Default is the function \code{sim_simple}, which is a least squares fit (continuous variables) or multinomial logistic regression (factor variables) respectively.
 #'
 #' @return sparse sequential knockoff copy of X. A data.frame or tibble of same type and dimensions as X.
@@ -158,7 +158,7 @@ sim_EN <- function(y, X, ...) {
 #'
 #' # knockoffs based on sequential elastic-net regression:
 #' Xk <- knockoffs_sparse_seq(X)
-knockoffs_sparse_seq <- function(X, sparsity_estimator=glasso_adjacency_matrix){
+knockoffs_sparse_seq <- function(X, adjacency.matrix = NULL){
 
   check_design(X)
 
@@ -167,9 +167,12 @@ knockoffs_sparse_seq <- function(X, sparsity_estimator=glasso_adjacency_matrix){
   # add ".tilde" to column names:
   names(knockoffs) <- paste0(names(knockoffs),".tilde")
 
-  ## calculate the adjacency matrix
+  ## calculate the adjacency matrix (if not provided)
   ## This will determine which (original and knockoff) variables to include as predictors in the sequential regressions
-  adjacency.matrix <- sparsity_estimator(X)
+  if (is.null(adjacency.matrix)) {
+    adjacency.matrix <- glasso_adjacency_matrix(X)
+  }
+
   diag(adjacency.matrix) <- 0 # for convenience, assume each X_i is not adjacent with itself
 
   # Randomly shuffle column indices of X:
@@ -284,6 +287,7 @@ knockoffs_mx <- function(X) {
 #' @param X data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.
 #' @param method what type of knockoffs to calculate. Defaults to sequential knockoffs, method="seq", which works for
 #' both numeric and factor variables. The other options are method="sparseseq", which is the sparse sequential knockoff generation algorithm, and method="mx", which only works if all columns of X are continuous.
+#' @param ... additional parameters passed to the downstream knockoffs generating functions
 #'
 #' @return knockoff copy of X
 #' @export
@@ -302,16 +306,16 @@ knockoffs_mx <- function(X) {
 #'
 #' # MX-knockoff:
 #' Xk <- knockoff(X, method="mx")
-knockoff <- function(X, method="seq") {
+knockoff <- function(X, method="seq", ...) {
 
   if (method=="seq") {
-    Xk <- knockoffs_seq(X)
+    Xk <- knockoffs_seq(X, ...)
   }
   if (method=="mx") {
     Xk <- knockoffs_mx(X)
   }
   if (method=="sparseseq"){
-    Xk <- knockoffs_sparse_seq(X)
+    Xk <- knockoffs_sparse_seq(X, ...)
   }
 
   return(Xk)
