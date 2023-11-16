@@ -4,14 +4,14 @@
 \alias{knockoffs_seq}
 \title{Sequential knockoffs for continuous and categorical variables}
 \usage{
-knockoffs_seq(X, seq_simulator = sim_EN, ...)
+knockoffs_seq(X, seq_simulator = sim_glmnet, ...)
 }
 \arguments{
 \item{X}{data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.}
 
-\item{seq_simulator}{function that simulates sequential knockoffs. Default is the function \code{sim_EN}, which simulates response from an estimated elastic-net model}
+\item{seq_simulator}{function that simulates sequential knockoffs. Default is the function \code{sim_glmnet}, which simulates response from an estimated elastic-net model}
 
-\item{...}{other parameters passed to the function seq_simulator. For the default (elastic-net sequential seq_simulator, \code{seq_simulator = sim_EN})
+\item{...}{other parameters passed to the function seq_simulator. For the default (elastic-net sequential seq_simulator, \code{seq_simulator = sim_glmnet})
 these other parameters are passed to cv.glmnet.}
 }
 \value{

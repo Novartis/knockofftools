@@ -1,8 +1,8 @@
 #' Sequential knockoffs for continuous and categorical variables
 #'
 #' @param X data.frame (or tibble) with "numeric" and "factor" columns only. The number of columns, ncol(X) needs to be > 2.
-#' @param seq_simulator function that simulates sequential knockoffs. Default is the function \code{sim_EN}, which simulates response from an estimated elastic-net model
-#' @param ... other parameters passed to the function seq_simulator. For the default (elastic-net sequential seq_simulator, \code{seq_simulator = sim_EN})
+#' @param seq_simulator function that simulates sequential knockoffs. Default is the function \code{sim_glmnet}, which simulates response from an estimated elastic-net model
+#' @param ... other parameters passed to the function seq_simulator. For the default (elastic-net sequential seq_simulator, \code{seq_simulator = sim_glmnet})
 #' these other parameters are passed to cv.glmnet.
 #'
 #' @details \code{knockoffs_seq} performs sequential knockoff simulation using elastic-net regression.
@@ -18,7 +18,7 @@
 #'
 #' # knockoffs based on sequential elastic-net regression:
 #' Xk <- knockoffs_seq(X)
-knockoffs_seq <- function(X, seq_simulator = sim_EN, ...) {
+knockoffs_seq <- function(X, seq_simulator = sim_glmnet, ...) {
 
   check_design(X)
 
@@ -53,7 +53,7 @@ knockoffs_seq <- function(X, seq_simulator = sim_EN, ...) {
 }
 
 
-#' Simulate from elastic-net regression model
+#' Simulate from glmnet penalized regression model
 #'
 #' @param y response vector (either "numeric" or "factor") that gets passed to cv.glmnet
 #' @param X data.frame of covariates that are passed to cv.glmnet
@@ -71,11 +71,11 @@ knockoffs_seq <- function(X, seq_simulator = sim_EN, ...) {
 #' y = X[,1] + rnorm(100)
 #'
 #' # simulate from elastic-net regression:
-#' ysim = sim_EN(y=y, X=X)
+#' ysim = sim_glmnet(y=y, X=X)
 #'
 #' # simulated versus input response:
 #' plot(y, ysim)
-sim_EN <- function(y, X, ...) {
+sim_glmnet <- function(y, X, ...) {
 
   x <- model.matrix(~., data = X)[,-1]
 
@@ -85,12 +85,12 @@ sim_EN <- function(y, X, ...) {
 
     K <- length(classes)
 
-    gm.cv <- glmnet::cv.glmnet(y=y, x=x, family="multinomial", intercept=TRUE, alpha=0.5, ...)
+    gm.cv <- glmnet::cv.glmnet(y=y, x=x, family="multinomial", intercept=TRUE, alpha=1, ...)
 
     # Beta coefficients (excluding intercept)
-    beta.coefs <- as.numeric(coef(gm.cv, s = "lambda.min")[[2]])[-1]
+    beta.coefs <- as.numeric(coef(gm.cv, s = "lambda.1se")[[2]])[-1]
 
-    mu <- predict(gm.cv, newx=x, type="response", s="lambda.min")
+    mu <- predict(gm.cv, newx=x, type="response", s="lambda.1se")
 
     mat.multinom <- apply(mu, 1, function(prob) rmultinom(n=1, size=1, prob=prob))
 
@@ -104,10 +104,10 @@ sim_EN <- function(y, X, ...) {
 
     if(!is.numeric(y)) stop("class(y) needs to be either 'numeric' or 'factor'")
 
-    gm.cv <- glmnet::cv.glmnet(y=y, x=x, family="gaussian", intercept=TRUE, alpha=0.5, ...)
+    gm.cv <- glmnet::cv.glmnet(y=y, x=x, family="gaussian", intercept=TRUE, alpha=1, ...)
 
     # Beta coefficients (excluding intercept)
-    beta.coefs <- as.numeric(coef(gm.cv, s = "lambda.min"))[-1]
+    beta.coefs <- as.numeric(coef(gm.cv, s = "lambda.1se"))[-1]
 
     # columns of predictor matrix corresponding to non-zero beta.coefs:
     non.zero.cols <- which(beta.coefs != 0)
@@ -115,7 +115,7 @@ sim_EN <- function(y, X, ...) {
     # Total number of non-zero parameters (including intercept, hence + 1)
     s.lambda = length(non.zero.cols) + 1
 
-    mu <- predict(gm.cv, newx=x, type="response", s="lambda.min")
+    mu <- predict(gm.cv, newx=x, type="response", s="lambda.1se")
 
     rmse = sqrt(sum((y-mu)^2)/(length(y) - s.lambda))
 
@@ -192,7 +192,7 @@ knockoffs_sparse_seq <- function(X, adjacency.matrix = NULL){
     if (ncol(Xp) < length(y)/2) {
       knockoffs[[i]] <- sim_simple(y = y, X = Xp)
     } else {
-      knockoffs[[i]] <- sim_EN(y = y, X = Xp)
+      knockoffs[[i]] <- sim_glmnet(y = y, X = Xp)
     }
 
     loop.count <- loop.count + 1
