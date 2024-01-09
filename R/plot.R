@@ -81,14 +81,14 @@ plot.variable.selections <- function(S, nbcocluster=c(7,7)) {
   selections$selected <- factor(selections$selected)
 
   # vectorized input to ggplot2::element_text() will likely be deprecated:
-  #axis.text.y.color <- ifelse(unique(selections$variable) %in% stable.vars, "red", "black")
+  axis.text.y.color <- ifelse(unique(selections$variable) %in% stable.vars, "red", "black")
 
   ggplot2::ggplot(data=selections, mapping=ggplot2::aes(x = draw, y = variable)) +
     ggplot2::geom_tile(ggplot2::aes(fill = selected)) +
     ggplot2::xlab("knockoff repetition") +
     ggplot2::ylab("variable (stable selections colored in red)") +
     ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                   #axis.text.y =  ggplot2::element_text(colour = axis.text.y.color),
+                   axis.text.y =  ggplot2::element_text(colour = axis.text.y.color),
                    axis.ticks.x = ggplot2::element_blank()) +
     ggplot2::scale_fill_manual(values=c("0"="#132B43","1"="#56B1F7"))
 
