@@ -70,7 +70,7 @@
                         <h4 data-toc-skip class="author">Matthias
 Kormaksson, Kostas Sechidis</h4>
             
-            <h4 data-toc-skip class="date">November 27, 2023</h4>
+            <h4 data-toc-skip class="date">January 09, 2024</h4>
       
       
       <div class="d-none name"><code>survival-analysis-with-knockoffs.Rmd</code></div>
@@ -254,7 +254,9 @@ default).</p>
 procedure we can visualize a heatmap of the selections across the
 knockoff replicates.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
 <p><img src="survival-analysis-with-knockoffs_files/figure-html/unnamed-chunk-7-1.png" width="686.4">
 We apply co-clustering of the rows and columns of the heatmap, which
 identifies blocks of similarities in the binary selections. We then
