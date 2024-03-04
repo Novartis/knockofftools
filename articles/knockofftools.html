@@ -70,7 +70,7 @@
                         <h4 data-toc-skip class="author">Matthias
 Kormaksson, Kostas Sechidis</h4>
             
-            <h4 data-toc-skip class="date">January 11, 2024</h4>
+            <h4 data-toc-skip class="date">March 04, 2024</h4>
       
       
       <div class="d-none name"><code>knockofftools.Rmd</code></div>
@@ -163,9 +163,9 @@ output is a data.frame (or tibble) corresponding to the knockoff copy of
 <code class="sourceCode R"><span><span class="co"># Simulate sequential knockoff of X:</span></span>
 <span><span class="va">Xk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/knockoff.html">knockoff</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code></pre></div>
 <p>The above function will by default sample sequential knockoffs
-(method=“seq”) based on LASSO regression (see <span class="citation">(<a href="#ref-seqknockoffpaper" role="doc-biblioref">Kormaksson et al.
-2021</a>)</span>). Behind the scenes, <code>knockoff</code> calls the
-function <code><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html" class="external-link">glmnet::cv.glmnet</a></code> sequentially.</p>
+(method=“seq”) based on LASSO regression (see <span class="citation">(<a href="#ref-seqknockoffpaper">Kormaksson et al. 2021</a>)</span>). Behind
+the scenes, <code>knockoff</code> calls the function
+<code><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html" class="external-link">glmnet::cv.glmnet</a></code> sequentially.</p>
 <p><em>MX-knockoffs:</em> We can also simulate Gaussian MX-knockoffs
 (via call to <code><a href="https://rdrr.io/pkg/knockoff/man/create.second_order.html" class="external-link">knockoff::create.second_order</a></code>). This function
 only works on data frames with all “numeric” columns.</p>
@@ -265,9 +265,10 @@ variables that should tend towards the top of the heatmap.</p>
 <div class="section level3">
 <h3 id="multiple-knockoffs-filter-procedure">A. The multiple knockoffs filter procedure for FDR-control<a class="anchor" aria-label="anchor" href="#multiple-knockoffs-filter-procedure"></a>
 </h3>
-<p><span class="citation">(<a href="#ref-seqknockoffpaper" role="doc-biblioref">Kormaksson et al. 2021</a>)</span> introduced a
-heuristic algorithm for selecting stable variables from multiple
-independent knockoff variable selections.</p>
+<p><span class="citation">(<a href="#ref-seqknockoffpaper">Kormaksson et
+al. 2021</a>)</span> introduced a heuristic algorithm for selecting
+stable variables from multiple independent knockoff variable
+selections.</p>
 <p>Let <span class="math inline">\(\tilde{X}_1, \dots,
 \tilde{X}_B\)</span> denote <span class="math inline">\(B\)</span>
 independent knockoff copies of <span class="math inline">\(X\)</span>.
@@ -301,7 +302,7 @@ selection among the sets <span class="math inline">\(\{S(r):r \geq
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-seqknockoffpaper" class="csl-entry">
 Kormaksson, M., L. J. Kelly, X. Zhu, S. Haemmerle, L. Pricop, and D.
 Ohlssen. 2021. <span>“Sequential Knockoffs for Continuous and
